@@ -59,6 +59,8 @@ const sync = async () => {
       {name: 'quq'}
     ]
 
+    const [ foo, bar, bazz, quq ] = await Promise.all(products.map( prod => Product.create(prod)));
+
     const companies = [
       {name: 'The Foo Company'},
       {name: 'The Bar Company'},
