@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const { STRING, UUID, UUIDV4 } = Sequelize;
+const { STRING, UUID, UUIDV4, DECIMAL } = Sequelize;
 const conn = new Sequelize( process.env.DATABASE_URL || 'postgres://localhost/acme_product_offerings_api');
 
 
@@ -10,7 +10,8 @@ const Product = conn.define('product', {
     defaultValue: UUIDV4,
     allowNull: false
   },
-  name: STRING
+  name: STRING,
+  suggestedPrice: DECIMAL
 });
 
 const Company = conn.define('company', {
@@ -30,35 +31,25 @@ const Offering = conn.define('offering', {
     defaultValue: UUIDV4,
     allowNull: false
   },
-  name: STRING
+  name: STRING,
+  price: DECIMAL
 });
 
-Product.belongsTo(Company, {as: 'company'});
+Offering.belongsTo(Product);
+Offering.belongsTo(Company);
 
-Company.hasMany(Product, {foreignKey: 'productId'});
-
-Offering.belongsTo(Product, {as: 'product'});
-Offering.belongsTo(Company, {as: 'company'});
-
-Product.hasMany(Offering, {foreignKey: 'offeringId'});
-Company.hasMany(Offering, {foreignKey: 'offeringId'});
-
-const mapPromise = (items, model) => {
-  return Promise.all(items.map ( item => model.create(item)));
-}
-
+// const mapPromise = (items, model) => {
+//   return Promise.all(items.map ( item => model.create(item)));
+// }
 
 const sync = async () => {
-  await conn.sync({force: true});
-
-
+  await conn.sync({ force: true });
     const products = [
-      {name: 'foo'},
+      {name: 'foo', suggestedPrice: 8},
       {name: 'bar'},
       {name: 'bazz'},
       {name: 'quq'}
     ]
-
     const [ foo, bar, bazz, quq ] = await Promise.all(products.map( prod => Product.create(prod)));
 
     const companies = [
@@ -71,7 +62,7 @@ const sync = async () => {
     const [ Foofun, Badassbar, Bazzafrass, Luckyquq ] = await Promise.all(companies.map( comp => Company.create(comp)));
 
     const offerings = [
-      {name: 'foofriday'},
+      {name: 'foofriday', companyId: Foofun.id, productId: foo.id, price: 4},
       {name: 'barz'},
       {name: 'bizzazz'},
       {name: 'quqawar'}
