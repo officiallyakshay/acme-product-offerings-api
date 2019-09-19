@@ -62,18 +62,22 @@ const sync = async () => {
     const [ foo, bar, bazz, quq ] = await Promise.all(products.map( prod => Product.create(prod)));
 
     const companies = [
-      {name: 'The Foo Company'},
-      {name: 'The Bar Company'},
-      {name: 'The Bazz Company'},
-      {name: 'The Quq Company'}
+      {name: 'Foofun'},
+      {name: 'Badassbar'},
+      {name: 'Bazzafrass'},
+      {name: 'Luckyquq'}
     ]
 
+    const [ Foofun, Badassbar, Bazzafrass, Luckyquq ] = await Promise.all(companies.map( comp => Company.create(comp)));
+
     const offerings = [
-      {name: 'foo'},
-      {name: 'bar'},
-      {name: 'bazz'},
-      {name: 'quq'}
+      {name: 'foofriday'},
+      {name: 'barz'},
+      {name: 'bizzazz'},
+      {name: 'quqawar'}
     ]
+
+    const [ foofriday, barz, bizzazz, quqawar ] = await Promise.all(offerings.map( off => Offering.create(off)));
   };
 
   module.exports = {
