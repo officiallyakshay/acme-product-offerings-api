@@ -35,20 +35,17 @@ const Offering = conn.define('offering', {
   price: DECIMAL
 });
 
+//with belongsTo, left side gets the ids. refer to line 62
 Offering.belongsTo(Product);
 Offering.belongsTo(Company);
-
-// const mapPromise = (items, model) => {
-//   return Promise.all(items.map ( item => model.create(item)));
-// }
 
 const sync = async () => {
   await conn.sync({ force: true });
     const products = [
-      {name: 'foo', suggestedPrice: 8},
-      {name: 'bar'},
-      {name: 'bazz'},
-      {name: 'quq'}
+      {name: 'foo', suggestedPrice: 8.9},
+      {name: 'bar', suggestedPrice: 9.1},
+      {name: 'bazz', suggestedPrice: 9.3},
+      {name: 'quq', suggestedPrice: 9.5}
     ]
     const [ foo, bar, bazz, quq ] = await Promise.all(products.map( prod => Product.create(prod)));
 
@@ -63,9 +60,9 @@ const sync = async () => {
 
     const offerings = [
       {name: 'foofriday', companyId: Foofun.id, productId: foo.id, price: 4},
-      {name: 'barz'},
-      {name: 'bizzazz'},
-      {name: 'quqawar'}
+      {name: 'barz', companyId: Badassbar.id, productId: bar.id, price: 5},
+      {name: 'bizzazz', companyId: Bazzafrass.id, productId: bazz.id, price: 6},
+      {name: 'quqawar', companyId: Luckyquq.id, productId: quq.id, price: 7}
     ]
 
     const [ foofriday, barz, bizzazz, quqawar ] = await Promise.all(offerings.map( off => Offering.create(off)));
